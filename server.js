@@ -23,6 +23,7 @@ app.post('/api/login',db.login)
 app.put('/users/:id', db.updateUser)
 app.delete('/users/:id', db.deleteUser)
 app.post('/send/mail',require('./mail').sendMail)
+app.post('/export/aws',require('./aws').exportAWS)
 app.listen(port, () => {
     console.log(`App running on port ${port}.`)
 })
