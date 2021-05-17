@@ -1,0 +1,10 @@
+[
+    {
+        "NumFacture": "fact1",
+        "Date": "2021-05-20",
+        "Description": "Facture montage meuble IKEA",
+        "IdJob": "1",
+        "Tasker": "1",
+        "Jobber": "2"
+    }
+]

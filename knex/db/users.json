@@ -1,0 +1,11 @@
+[
+    {
+      "lastname": "Doe",
+      "firstname": "John",
+      "email": "johndoe@gmail.com",
+      "password": "johndoe",
+      "phone": "0123456789",
+      "adress": "55 rue joyeux",
+      "stripeID": "id123"
+    }
+]

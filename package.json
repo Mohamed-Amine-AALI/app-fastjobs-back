@@ -1,0 +1,33 @@
+{
+  "name": "startupweek-back",
+  "version": "1.0.0",
+  "description": "",
+  "main": "knexfile.js",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
+    "dotenv": "^9.0.2",
+    "express": "^4.17.1",
+    "knex": "^0.95.5",
+    "pg": "^8.6.0"
+  },
+  "devDependencies": {
+    "dotenv": "^9.0.2",
+    "knex": "^0.95.5"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js",
+    "knex": "knex"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Acleefr/startupweek-back.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Acleefr/startupweek-back/issues"
+  },
+  "homepage": "https://github.com/Acleefr/startupweek-back#readme"
+}
