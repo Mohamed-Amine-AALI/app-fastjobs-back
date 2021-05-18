@@ -28,19 +28,23 @@ const getUserById = async (request, response) => {
             id: id,
            }
          })
-       getUser!=null ? response.json(getUser) : response.json({
+         getuser!=null ? response.json(getuser) : response.json({
          text: 'No user found'
        })
 }
 const login = (request, response) => {
   const { username, password } = request.body
-
+  if(username== null || password== null){
+    response.json({
+      text: 'Verify username and password'
+    })
+  }
   // const validPassword = await bcrypt.compare(body.password, user.password);
-
   pool.query('SELECT * FROM users WHERE email = $1', [username], (error, results) => {
     if (error) {
       throw error
     }
+    if(results.rows.length>0){
     bcrypt.compareSync(password, results.rows[0].password);
     const validPassword = bcrypt.compareSync(password, results.rows[0].password);
     if (!validPassword) {
@@ -56,7 +60,9 @@ const login = (request, response) => {
         }
       })
     }
-
+  }else{
+    response.status(400).json({text: 'No user found'})
+  }
 
   })
 }
@@ -106,12 +112,89 @@ const deleteUser = (request, response) => {
     response.status(200).send(`User deleted with ID: ${id}`)
   })
 }
-
+const createJob = async(request, response) => {
+  const { Name,Description,Categories,Date,Remuneration,State,Long,Lat,Tasker,Jobber } = request.body
+    const insertjob = await prisma.jobs.create({
+      data: {
+        Name:Name,
+        Description:Description,
+        Categories:Categories,
+        Date:Date,
+        Remuneration:Remuneration,
+        State:State,
+        Long:Long,
+        Lat:Lat,
+        Tasker:Tasker,
+        Jobber:Jobber
+      }
+    }).then((res)=>{
+      if(res!=null){
+        response.json({
+          text:`Job added with id : ${res.id}`
+        })
+      }
+    }).catch((e)=>{
+      response.json({
+        text:`Job can't be added`
+      })
+    })
+  }
+  const updateJob = async (request, response) => {
+    const id = parseInt(request.params.id)
+    const { Name,Description,Categories,Date,Remuneration,State,Long,Lat,Tasker,Jobber } = request.body
+    
+    const updatejob = await prisma.jobs.update({
+      where: { id:id },
+      data: {
+        Name:Name != null ? Name : undefined,
+        Description:Description != null ? Description : undefined,
+        Categories:Categories != null ? Categories : undefined,
+        Date:Date != null ? Date : undefined,
+        Remuneration:Remuneration != null ? Remuneration : undefined,
+        State:State != null ? Name : undefined,
+        Long:Long != null ? Long : undefined,
+        Lat:Lat != null ? Lat : undefined,
+        Tasker:Tasker != null ? Tasker : undefined,
+        Jobber:Jobber != null ? Jobber : undefined,
+      },
+    }).then((res)=>{
+      console.log(res)
+      if(res!=null){
+        response.json({
+          text:`Job updated with id : ${res.id}`
+        })
+      }
+    }).catch((e)=>{
+      console.log(e)
+      response.json({
+        text:`Job can't be updated`
+      })
+    })
+    }
+    const deleteJob = async (request, response) => {
+      const id = parseInt(request.params.id)
+      const deletejob = await prisma.jobs.delete({
+        where: { id:id },
+      }).then((res)=>{
+        if(res!=null){
+          response.json({
+            text:`Job deleted with id : ${res.id}`
+          })
+        }
+      }).catch((e)=>{
+        response.json({
+          text:`Job can't be deleted`
+        })
+      })
+      }
 module.exports = {
   getUsers,
   getUserById,
   createUser,
   updateUser,
   deleteUser,
-  login
+  login,
+  createJob,
+  updateJob,
+  deleteJob
 }
