@@ -1,5 +1,7 @@
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcrypt')
+const { PrismaClient } = require("@prisma/client")
+const prisma = new PrismaClient()
 require('dotenv').config();
 const Pool = require('pg').Pool
 const pool = new Pool({
@@ -11,26 +13,24 @@ const pool = new Pool({
   ssl: { rejectUnauthorized: false }
 })
 
-const getUsers = (request, response) => {
-  pool.query('SELECT * FROM users ORDER BY id ASC', (error, results) => {
-    if (error) {
-      throw error
-    }
-    console.log(results);
-    response.status(200).json(results.rows)
-  })
-}
+const getUsers = async (request, response) => {
+    const getusers = await prisma.users.findMany({
+      })
+      getusers!=null ? response.json(getusers) : response.json({
+        text: 'No user found'
+       })
+   }
 
 const getUserById = (request, response) => {
   const id = parseInt(request.params.id)
-  console.log(id)
-  pool.query('SELECT * FROM users WHERE id = $1', [id], (error, results) => {
-    if (error) {
-      throw error
-    }
-    response.status(200).json(results.rows)
-
-  })
+  const getuser = await prisma.users.findUnique({
+          where: {
+            id: id,
+           }
+         })
+       getUser!=null ? response.json(getUser) : response.json({
+         text: 'No user found'
+       })
 }
 const login = (request, response) => {
   const { username, password } = request.body
