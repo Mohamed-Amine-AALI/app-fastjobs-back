@@ -66,24 +66,32 @@ const login = (request, response) => {
 
   })
 }
-const createUser = (request, response) => {
+const createUser = async (request, response) => {
   const { lastname, firstname, email, password, phone, adress } = request.body
-  //console.log(request.body);
   let hash = bcrypt.hashSync(password, 10, (err, hash) => {
     if (err) {
       response.status(400).send(`Can't hash password, retry`)
     }
   });
-
-  pool.query('INSERT INTO users (lastname,firstname,email,password,phone,adress) VALUES ($1, $2, $3, $4, $5, $6)',
-    [lastname, firstname, email, hash, phone, adress],
-    (error, results) => {
-      if (error) {
-        throw error
-      }
-      response.status(201).send(`User added with ID: ${results.insertId}`)
+  const insertuser = await prisma.users.create({
+    data: {
+      lastname:lastname,
+      firstname:firstname,
+      email:email,
+      password:hash,
+      adress:adress,
     }
-  )
+  }).then((res)=>{
+    if(res!=null){
+      response.json({
+        text:`User added with id : ${res.id}`
+      })
+    }
+  }).catch((e)=>{
+    response.json({
+      text:`User can't be added`
+    })
+  })
 }
 
 const updateUser = (request, response) => {
@@ -187,6 +195,18 @@ const createJob = async(request, response) => {
         })
       })
       }
+      const getJob = async (request, response) => {
+        const id = parseInt(request.params.id)
+        const getjob = await prisma.jobs.findUnique({
+                where: {
+                  id: id,
+                 }
+               })
+               getjob!=null ? response.json(getjob) : response.json({
+               text: 'No user found'
+             })
+      }
+
 module.exports = {
   getUsers,
   getUserById,
@@ -196,5 +216,6 @@ module.exports = {
   login,
   createJob,
   updateJob,
-  deleteJob
+  deleteJob,
+  getJob
 }
