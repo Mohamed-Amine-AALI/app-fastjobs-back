@@ -103,12 +103,48 @@ const deleteUser = (request, response) => {
     })
 }
 
+const getInvoices = (request, response) => {
+  pool.query('SELECT * FROM invoices ORDER BY id ASC', (error, results) => {
+    if (error) {
+      throw error
+    }
+
+    response.status(200).json(results.rows)
+  })
+}
+
+const getInvoiceById = (request, response) => {
+  const id = parseInt(request.params.id)
+  pool.query('SELECT * FROM invoices WHERE id = $1', [id], (error, results) => {
+    if (error) {
+      throw error
+    }
+    response.status(200).json(results.rows)
+
+  })
+}
+
+const createInvoice = (request, response) => {
+  console.log(request.body);
+  response.json('toto')
+  // const { NumFacture,Date,Description,IdJob,Tasker,Jobber } = request.body
+  // pool.query('INSERT INTO invoices (NumFacture,Date,Description,IdJob,Tasker,Jobber) VALUES ($1, $2, $3, $4, $5, $6)', [NumFacture,Date,Description,IdJob,Tasker,Jobber], (error, results) => {
+  //   if (error) {
+  //     throw error
+  //   }
+  //   response.status(201).send(`User added with ID: ${results.insertId}`)
+  // })
+}
+
 module.exports = {
     getUsers,
     getUserById,
     createUser,
     updateUser,
     deleteUser,
-    login
+    login,
+    getInvoices,
+    getInvoiceById,
+    createInvoice
   }
   

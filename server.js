@@ -5,14 +5,7 @@ const db = require('./queries')
 var cors = require('cors')
 const app = express()
 let port=process.env.PORT || 4242
-const bodyParser = require('body-parser')
 
-app.use(bodyParser.json())
-app.use(
-  bodyParser.urlencoded({
-    extended: true,
-  })
-)
 app.get('/', (request, response) => {
     response.json({ info: 'Node.js, Express, and Postgres API' })
 })
@@ -24,6 +17,10 @@ app.put('/users/:id', db.updateUser)
 app.delete('/users/:id', db.deleteUser)
 app.post('/send/mail',require('./mail').sendMail)
 app.post('/export/aws',require('./aws').exportAWS)
+app.get('/invoices', db.getInvoices)
+app.get('/invoices/:id', db.getInvoiceById)
+app.post('/create/invoices', db.createInvoice)
+
 app.listen(port, () => {
     console.log(`App running on port ${port}.`)
 })
