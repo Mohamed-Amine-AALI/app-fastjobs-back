@@ -34,7 +34,7 @@ const getUserById = async (request, response) => {
 }
 const login = (request, response) => {
   const { email, password } = request.body
-  if (username == null || password == null) {
+  if (email == null || password == null) {
     response.json({
       text: 'Verify username and password'
     })
@@ -49,7 +49,6 @@ const login = (request, response) => {
       const validPassword = bcrypt.compareSync(password, results.rows[0].password);
       if (!validPassword) {
         response.status(400).json({ text: 'Incorect password' })
-
       }
       else {
         let token = jwt.sign({ user: results.rows[0].id }, 'key')
