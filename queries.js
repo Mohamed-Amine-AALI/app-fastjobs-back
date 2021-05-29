@@ -67,7 +67,7 @@ const login = (request, response) => {
   })
 }
 const createUser = async (request, response) => {
-  const { lastname, firstname, email, password, phone, adress } = request.body
+  const { lastname, firstname, email, password, phone } = request.body
   let hash = bcrypt.hashSync(password, 10, (err, hash) => {
     if (err) {
       response.status(400).send(`Can't hash password, retry`)
@@ -79,7 +79,7 @@ const createUser = async (request, response) => {
       firstname:firstname,
       email:email,
       password:hash,
-      adress:adress,
+      phone:phone,
     }
   }).then((res)=>{
     if(res!=null){
