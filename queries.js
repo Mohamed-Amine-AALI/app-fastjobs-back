@@ -35,7 +35,6 @@ const getUserById = async (request, response) => {
 
 const verifyJWT = (req, res, next) => {
   const token = req.headers['x-access-token']
-
   if (!token) {
     res.send('We need a token')
   }
@@ -54,28 +53,31 @@ const verifyJWT = (req, res, next) => {
 
 const login = (request, response) => {
   const { email, password } = request.body
-  if (email == null || password == null) {
-    response.json({
-      text: 'Verify username and password'
-    })
-  }
   pool.query('SELECT * FROM users WHERE email = $1', [email], (error, result) => {
     if (error) {
-      response.json({ auth: false, message: "User or password incorrect" })
+      console.log('ERROR :')
+      console.log(error)
+      response.json({ auth: false, message: "Email or password incorrect" })
     }
     else if (result.rows.length > 0) {
+      console.log(result)
       const validPassword = bcrypt.compareSync(password, result.rows[0].password);
       if (!validPassword) {
+        console.log("INVALID PASSWORD")
         response.status(400).json({ message: 'Incorect password' })
       }
       else {
+        console.log('VALID PASSWORD :')
+        console.log(token)
+        console.log(result)
         const userId = result.rows[0].id
         const token = jwt.sign({ user: userId }, 'jwtSecret')
-        request.session.user = result
+        //request.session.user = result
         response.json({ auth: true, token: token, result: result })
       }
     }
     else {
+      console.log('NO USER FOUND')
       response.json({ auth: false, message: "No user found" })
     }
 
