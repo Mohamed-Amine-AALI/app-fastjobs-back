@@ -63,13 +63,13 @@ const login = (request, response) => {
     if (error) {
       response.json({ auth: false, message: "User or password incorrect" })
     }
-    else if (results.rows.length > 0) {
+    else if (result.rows.length > 0) {
       const validPassword = bcrypt.compareSync(password, result.rows[0].password);
       if (!validPassword) {
         response.status(400).json({ message: 'Incorect password' })
       }
       else {
-        const userId = results.rows[0].id
+        const userId = result.rows[0].id
         const token = jwt.sign({ user: userId }, 'jwtSecret')
         request.session.user = result
         response.json({ auth: true, token: token, result: result })
