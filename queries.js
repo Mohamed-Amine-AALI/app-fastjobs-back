@@ -32,6 +32,26 @@ const getUserById = async (request, response) => {
     text: 'No user found'
   })
 }
+
+const verifyJWT = (req, res, next) => {
+  const token = req.headers['x-access-token']
+
+  if (!token) {
+    res.send('We need a token')
+  }
+  else {
+    jwt.verify(token, 'jwtSecret', (err, decoded) => {
+      if (err) {
+        res.json({auth: false, message: 'You failed to authenticate'})
+      }
+      else {
+        req.userId = decoded.id
+        next();
+      }
+    })
+  }
+}
+
 const login = (request, response) => {
   const { email, password } = request.body
   if (email == null || password == null) {
@@ -39,33 +59,29 @@ const login = (request, response) => {
       text: 'Verify username and password'
     })
   }
-  // const validPassword = await bcrypt.compare(body.password, user.password);
-  pool.query('SELECT * FROM users WHERE email = $1', [email], (error, results) => {
+  pool.query('SELECT * FROM users WHERE email = $1', [email], (error, result) => {
     if (error) {
-      throw error
+      response.json({ auth: false, message: "User or password incorrect" })
     }
-    if (results.rows.length > 0) {
-      bcrypt.compareSync(password, results.rows[0].password);
-      const validPassword = bcrypt.compareSync(password, results.rows[0].password);
+    else if (results.rows.length > 0) {
+      const validPassword = bcrypt.compareSync(password, result.rows[0].password);
       if (!validPassword) {
-        response.status(400).json({ text: 'Incorect password' })
+        response.status(400).json({ message: 'Incorect password' })
       }
       else {
-        let token = jwt.sign({ user: results.rows[0].id }, 'key')
-        jwt.verify(token, 'key', function (err, data) {
-          if (err) {
-            throw err
-          } else {
-            response.status(200).json(results.rows.concat({ 'token': token }))
-          }
-        })
+        const userId = results.rows[0].id
+        const token = jwt.sign({ user: userId }, 'jwtSecret')
+        request.session.user = result
+        response.json({ auth: true, token: token, result: result })
       }
-    } else {
-      response.status(400).json({ text: 'No user found' })
+    }
+    else {
+      response.json({ auth: false, message: "No user found" })
     }
 
   })
 }
+
 const createUser = async (request, response) => {
   const { lastname, firstname, email, password, phone } = request.body
   let hash = bcrypt.hashSync(password, 10, (err, hash) => {
@@ -120,6 +136,7 @@ const deleteUser = (request, response) => {
     response.status(200).send(`User deleted with ID: ${id}`)
   })
 }
+
 const createJob = async (request, response) => {
   const { Name, Description, Categories, Date, Remuneration, State, Long, Lat, Tasker, Jobber } = request.body
   const insertjob = await prisma.jobs.create({
@@ -147,6 +164,7 @@ const createJob = async (request, response) => {
     })
   })
 }
+
 const updateJob = async (request, response) => {
   const id = parseInt(request.params.id)
   const { Name, Description, Categories, Date, Remuneration, State, Long, Lat, Tasker, Jobber } = request.body
@@ -179,6 +197,7 @@ const updateJob = async (request, response) => {
     })
   })
 }
+
 const deleteJob = async (request, response) => {
   const id = parseInt(request.params.id)
   const deletejob = await prisma.jobs.delete({
@@ -195,6 +214,7 @@ const deleteJob = async (request, response) => {
     })
   })
 }
+
 const getJob = async (request, response) => {
   const id = parseInt(request.params.id)
   const getjob = await prisma.jobs.findUnique({
