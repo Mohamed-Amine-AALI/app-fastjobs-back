@@ -70,10 +70,9 @@ const login = (request, response) => {
         console.log('VALID PASSWORD :')
         console.log(token)
         console.log(result)
-        const userId = result.rows[0].id
-        const token = jwt.sign({ user: userId }, 'jwtSecret')
-        //request.session.user = result
-        response.json({ auth: true, token: token, result: result })
+        jwt.sign({ user: result.rows[0] }, 'secretKey', (err, token) => {
+          response.json({ auth: true, token: token, result: result })
+        })
       }
     }
     else {
