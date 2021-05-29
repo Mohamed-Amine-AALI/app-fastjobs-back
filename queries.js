@@ -60,6 +60,7 @@ const login = (request, response) => {
       response.json({ auth: false, message: "Email or password incorrect" })
     }
     else if (result.rows.length > 0) {
+      console.log("RESULT :")
       console.log(result)
       const validPassword = bcrypt.compareSync(password, result.rows[0].password);
       if (!validPassword) {
@@ -68,9 +69,8 @@ const login = (request, response) => {
       }
       else {
         console.log('VALID PASSWORD :')
-        console.log(token)
-        console.log(result)
         jwt.sign({ user: result.rows[0] }, 'secretKey', (err, token) => {
+          console.log(token)
           response.json({ auth: true, token: token, result: result })
         })
       }
