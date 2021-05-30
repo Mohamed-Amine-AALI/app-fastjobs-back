@@ -163,22 +163,22 @@ const createJob = async (request, response) => {
 }
 
 const updateJob = async (request, response) => {
-  //const id = parseInt(request.params.id)
+  const jobId = request.params.id;
+  const jobberId = request.body.jobber
   jwt.verify(request.token, 'secretkey', async (err, authData) => {
     if (err) {
-      console.log(err)
-      console.log("ERROR UPDATING JOB")
-      console.log(request.token)
       response.status(403).send(err)
     }
     else {
-      // pool.query('SELECT * FROM jobs', (error, results) => {
-      //   if (error) {
-      //     res.status(403).send(error)
-      //     throw error;
-      //   }
-      //   response.status(200).json(results.rows);
-      // });
+      pool.query("UPDATE jobs SET jobber = $1, state = 'inprogress' WHERE id = $2", [jobberId, jobId],
+        (error, results) => {
+          if (error) {
+            console.log("ERROR UPDATING JOB")
+            res.status(403).send(error)
+            throw error;
+          }
+          response.status(200).json(results);
+        });
       console.log(request)
     }
   })
@@ -204,14 +204,12 @@ const deleteJob = async (request, response) => {
 const getJobs = (request, response) => {
   jwt.verify(request.token, 'secretkey', async (err, authData) => {
     if (err) {
-      console.log(err)
-      console.log("ERROR GETTING JOBS")
-      console.log(request.token)
       response.status(403).send(err)
     }
     else {
       pool.query('SELECT * FROM jobs', (error, results) => {
         if (error) {
+          console.log("ERROR GETTING JOBS")
           res.status(403).send(error)
           throw error;
         }
