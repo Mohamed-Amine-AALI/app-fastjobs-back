@@ -16,6 +16,7 @@ const verifyToken = (req, res, next) => {
     next();
   }
   else {
+    console.log("403")
     res.status(403)
   }
 }
