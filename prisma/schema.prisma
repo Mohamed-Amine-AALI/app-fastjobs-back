@@ -4,7 +4,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url = "postgres://xpgushjfjwzypv:339d673052bc436fe62a3d2f301a66c66a7971a31b0d37967a886aef3c8d70b4@ec2-79-125-30-28.eu-west-1.compute.amazonaws.com:5432/d9q6od77chsgde"
+  url      = "postgres://xpgushjfjwzypv:339d673052bc436fe62a3d2f301a66c66a7971a31b0d37967a886aef3c8d70b4@ec2-79-125-30-28.eu-west-1.compute.amazonaws.com:5432/d9q6od77chsgde"
 }
 
 /// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
@@ -29,17 +29,17 @@ model job {
 }
 
 model jobs {
-  id           Int     @id @default(autoincrement())
-  Name         String? @db.VarChar(10000)
-  Description  String? @db.VarChar(10000)
-  Categories   String? @db.VarChar(10000)
-  Date         String? @db.VarChar(10000)
-  Remuneration String? @db.VarChar(10000)
-  State        String? @db.VarChar(10000)
-  Long         String? @db.VarChar(10000)
-  Lat          String? @db.VarChar(10000)
-  Tasker       String? @db.VarChar(10000)
-  Jobber       String? @db.VarChar(10000)
+  id          Int     @id @default(autoincrement())
+  name        String? @db.VarChar(10000)
+  description String? @db.VarChar(10000)
+  category    String? @db.VarChar(10000)
+  date        String? @db.VarChar(10000)
+  price       String? @db.VarChar(10000)
+  state       String? @db.VarChar(10000)
+  long        String? @db.VarChar(10000)
+  lat         String? @db.VarChar(10000)
+  tasker      String? @db.VarChar(10000)
+  jobber      String? @db.VarChar(10000)
 }
 
 /// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
