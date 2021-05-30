@@ -53,7 +53,7 @@ const verifyJWT = (req, res, next) => {
 
 const login = (request, response) => {
   const { email, password } = request.body
-  pool.query('SELECT * FROM users WHERE email = $1', [email], (error, result) => {
+  pool.query('SELECT id FROM users WHERE email = $1', [email], (error, result) => {
     if (error) {
       console.log('ERROR :')
       console.log(error)
@@ -69,9 +69,10 @@ const login = (request, response) => {
       }
       else {
         console.log('VALID PASSWORD :')
-        jwt.sign({ user: result.rows[0] }, 'secretKey', (err, token) => {
+        userId = result.rows[0].id
+        jwt.sign({ user: userId }, 'secretKey', (err, token) => {
           console.log(token)
-          response.json({ auth: true, token: token, result: result })
+          response.json({ auth: true, token: token, userId: userId })
         })
       }
     }
@@ -79,7 +80,6 @@ const login = (request, response) => {
       console.log('NO USER FOUND')
       response.json({ auth: false, message: "No user found" })
     }
-
   })
 }
 
