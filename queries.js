@@ -163,35 +163,24 @@ const createJob = async (request, response) => {
 }
 
 const updateJob = async (request, response) => {
-  const id = parseInt(request.params.id)
-  const { Name, Description, Categories, Date, Remuneration, State, Long, Lat, Tasker, Jobber } = request.body
-
-  const updatejob = await prisma.jobs.update({
-    where: { id: id },
-    data: {
-      Name: Name != null ? Name : undefined,
-      Description: Description != null ? Description : undefined,
-      Categories: Categories != null ? Categories : undefined,
-      Date: Date != null ? Date : undefined,
-      Remuneration: Remuneration != null ? Remuneration : undefined,
-      State: State != null ? Name : undefined,
-      Long: Long != null ? Long : undefined,
-      Lat: Lat != null ? Lat : undefined,
-      Tasker: Tasker != null ? Tasker : undefined,
-      Jobber: Jobber != null ? Jobber : undefined,
-    },
-  }).then((res) => {
-    console.log(res)
-    if (res != null) {
-      response.json({
-        text: `Job updated with id : ${res.id}`
-      })
+  //const id = parseInt(request.params.id)
+  jwt.verify(request.token, 'secretkey', async (err, authData) => {
+    if (err) {
+      console.log(err)
+      console.log("ERROR UPDATING JOB")
+      console.log(request.token)
+      response.status(403).send(err)
     }
-  }).catch((e) => {
-    console.log(e)
-    response.json({
-      text: `Job can't be updated`
-    })
+    else {
+      // pool.query('SELECT * FROM jobs', (error, results) => {
+      //   if (error) {
+      //     res.status(403).send(error)
+      //     throw error;
+      //   }
+      //   response.status(200).json(results.rows);
+      // });
+      console.log(request)
+    }
   })
 }
 
