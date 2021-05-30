@@ -8,7 +8,8 @@ let port=process.env.PORT || 4242
 const bodyParser = require('body-parser')
 
 const verifyToken = (req, res, next) => {
-  console.log(req)
+  console.log('HEADERS')
+  console.log(req.headers)
   const bearerHeader = req.headers['authorization']
   if (typeof baererHeader !== 'undefined') {
     const bearer = bearerHeader.split(' ');
