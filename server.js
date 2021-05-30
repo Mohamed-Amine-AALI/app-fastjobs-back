@@ -11,7 +11,7 @@ const verifyToken = (req, res, next) => {
   console.log('HEADERS')
   console.log(req.headers)
   const bearerHeader = req.headers['authorization']
-  if (typeof baererHeader !== 'undefined') {
+  if (typeof bearerHeader !== 'undefined') {
     const bearer = bearerHeader.split(' ');
     const bearerToken = bearer[1];
     req.token = bearerToken;
