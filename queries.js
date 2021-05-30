@@ -215,9 +215,10 @@ const deleteJob = async (request, response) => {
 const getJobs = (request, response) => {
   jwt.verify(request.token, 'secretkey', async (err, authData) => {
     if (err) {
+      console.log(err)
       console.log("ERROR GETTING JOBS")
       console.log(request.token)
-      response.status(403).send('Forbidden')
+      response.status(403).send(err)
     }
     else {
       try {
