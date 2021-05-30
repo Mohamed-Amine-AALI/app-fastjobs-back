@@ -53,7 +53,7 @@ const verifyJWT = (req, res, next) => {
 
 const login = (request, response) => {
   const { email, password } = request.body
-  pool.query('SELECT id FROM users WHERE email = $1', [email], (error, result) => {
+  pool.query('SELECT id, password FROM users WHERE email = $1', [email], (error, result) => {
     if (error) {
       console.log('ERROR :')
       console.log(error)
@@ -62,7 +62,8 @@ const login = (request, response) => {
     else if (result.rows.length > 0) {
       console.log("RESULT :")
       console.log(result)
-      const validPassword = bcrypt.compareSync(password, result.rows[0].password);
+      userPassword =  result.rows[0].password
+      const validPassword = bcrypt.compareSync(password, userPassword);
       if (!validPassword) {
         console.log("INVALID PASSWORD")
         response.status(400).json({ message: 'Incorect password' })
