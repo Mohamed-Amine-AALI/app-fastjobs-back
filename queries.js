@@ -213,7 +213,7 @@ const deleteJob = async (request, response) => {
 }
 
 const getJobs = async (request, response) => {
-  jwt.verify(request.token, 'secretKey', (err, authData) => {
+  jwt.verify(request.token, 'secretKey', async(err, authData) => {
     if (err) {
       res.status(403)
     }
@@ -249,5 +249,6 @@ module.exports = {
   createJob,
   updateJob,
   deleteJob,
-  getJob
+  getJob,
+  getJobs
 }
