@@ -229,7 +229,7 @@ const getJobs = (request, response) => {
         })
       }
       catch (err) {
-        next(err)
+        response.status(406).send(err)
       }
     }
   })
