@@ -66,7 +66,7 @@ const login = (request, response) => {
       else {
         console.log('VALID PASSWORD :')
         userId = result.rows[0].id
-        jwt.sign({ user: userId }, 'secretKey', (err, token) => {
+        jwt.sign({ user: userId }, 'secretkey', (err, token) => {
           console.log(token)
           response.status(200).json({ auth: true, token: token, userId: userId })
         })
@@ -213,7 +213,7 @@ const deleteJob = async (request, response) => {
 }
 
 const getJobs = (request, response) => {
-  jwt.verify(request.token, 'secretKey', async (err, authData) => {
+  jwt.verify(request.token, 'secretkey', async (err, authData) => {
     if (err) {
       res.status(403)
     }
