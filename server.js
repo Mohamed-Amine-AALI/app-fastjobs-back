@@ -28,6 +28,7 @@ app.post('/api/login',db.login)
 app.post('/send/mail',require('./mail').sendMail)
 app.post('/export/aws',require('./aws').exportAWS)
 //jobs
+app.get('/jobs',db.getJobs)
 app.post('/job/:id',db.getJob)
 app.post('/create/job',db.createJob)
 app.put('/update/job/:id', db.updateJob)

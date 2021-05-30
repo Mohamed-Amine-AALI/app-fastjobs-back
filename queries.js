@@ -33,21 +33,16 @@ const getUserById = async (request, response) => {
   })
 }
 
-const verifyJWT = (req, res, next) => {
-  const token = req.headers['x-access-token']
-  if (!token) {
-    res.send('We need a token')
+const verifyToken = (req, res, next) => {
+  const bearerHeader = req.headers['authorization']
+  if (typeof baererHeader !== 'undefined') {
+    const bearer = bearerHeader.split(' ');
+    const bearerToken = bearer[1]
+    req.token = bearerToken
+    next()
   }
   else {
-    jwt.verify(token, 'jwtSecret', (err, decoded) => {
-      if (err) {
-        res.json({auth: false, message: 'You failed to authenticate'})
-      }
-      else {
-        req.userId = decoded.id
-        next();
-      }
-    })
+    res.status(403)
   }
 }
 
@@ -62,7 +57,7 @@ const login = (request, response) => {
     else if (result.rows.length > 0) {
       console.log("RESULT :")
       console.log(result)
-      userPassword =  result.rows[0].password
+      userPassword = result.rows[0].password
       const validPassword = bcrypt.compareSync(password, userPassword);
       if (!validPassword) {
         console.log("INVALID PASSWORD")
@@ -214,6 +209,21 @@ const deleteJob = async (request, response) => {
     response.json({
       text: `Job can't be deleted`
     })
+  })
+}
+
+const getJobs = async (request, response) => {
+  jwt.verify(request.token, 'secretKey', (err, authData) => {
+    if (err) {
+      res.status(403)
+    }
+    else {
+      const jobs = await prisma.jobs.findMany({})
+      jobs != null ? response.json(jobs) : response.json({
+        message: 'No user found',
+        authData
+      })
+    }
   })
 }
 

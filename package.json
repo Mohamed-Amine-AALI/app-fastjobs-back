@@ -12,16 +12,15 @@
     "dotenv": "^9.0.2",
     "express": "^4.17.1",
     "jsonwebtoken": "^8.5.1",
-    "knex": "^0.95.5",
     "node-mailjet": "^3.3.1",
-    "nodemon": "^2.0.7",
     "pg": "^8.6.0",
     "prisma": "^2.22.1",
     "uuid": "^8.3.2"
   },
   "devDependencies": {
     "dotenv": "^9.0.2",
-    "knex": "^0.95.5"
+    "knex": "^0.95.5",
+    "nodemon": "^2.0.7"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
