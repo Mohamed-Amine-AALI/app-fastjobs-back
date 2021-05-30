@@ -57,7 +57,7 @@ const login = (request, response) => {
     if (error) {
       console.log('ERROR :')
       console.log(error)
-      response.json({ auth: false, message: "Email or password incorrect" })
+      response.status(400).json({ auth: false, message: "Email or password incorrect" })
     }
     else if (result.rows.length > 0) {
       console.log("RESULT :")
@@ -73,13 +73,13 @@ const login = (request, response) => {
         userId = result.rows[0].id
         jwt.sign({ user: userId }, 'secretKey', (err, token) => {
           console.log(token)
-          response.json({ auth: true, token: token, userId: userId })
+          response.status(200).json({ auth: true, token: token, userId: userId })
         })
       }
     }
     else {
       console.log('NO USER FOUND')
-      response.json({ auth: false, message: "No user found" })
+      response.status(404).json({ auth: false, message: "No user found" })
     }
   })
 }
