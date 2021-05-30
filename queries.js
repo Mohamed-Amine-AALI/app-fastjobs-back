@@ -212,17 +212,22 @@ const deleteJob = async (request, response) => {
   })
 }
 
-const getJobs = async (request, response) => {
-  jwt.verify(request.token, 'secretKey', async(err, authData) => {
+const getJobs = (request, response) => {
+  jwt.verify(request.token, 'secretKey', async (err, authData) => {
     if (err) {
       res.status(403)
     }
     else {
-      const jobs = await prisma.jobs.findMany({})
-      jobs != null ? response.json(jobs) : response.json({
-        message: 'No user found',
-        authData
-      })
+      try {
+        const jobs = await prisma.jobs.findMany({})
+        jobs != null ? response.json(jobs) : response.json({
+          message: 'No user found',
+          authData
+        })
+      }
+      catch (err) {
+        next(err)
+      }
     }
   })
 }

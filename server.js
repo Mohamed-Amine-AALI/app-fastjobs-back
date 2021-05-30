@@ -7,6 +7,19 @@ const app = express()
 let port=process.env.PORT || 4242
 const bodyParser = require('body-parser')
 
+const verifyToken = (req, res, next) => {
+  const bearerHeader = req.headers['authorization']
+  if (typeof baererHeader !== 'undefined') {
+    const bearer = bearerHeader.split(' ');
+    const bearerToken = bearer[1];
+    req.token = bearerToken;
+    next();
+  }
+  else {
+    res.status(403)
+  }
+}
+
 app.use(bodyParser.json())
 app.use(
   bodyParser.urlencoded({
@@ -28,7 +41,7 @@ app.post('/api/login',db.login)
 app.post('/send/mail',require('./mail').sendMail)
 app.post('/export/aws',require('./aws').exportAWS)
 //jobs
-app.get('/jobs',db.getJobs)
+app.get('/jobs', verifyToken, db.getJobs)
 app.post('/job/:id',db.getJob)
 app.post('/create/job',db.createJob)
 app.put('/update/job/:id', db.updateJob)
