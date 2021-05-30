@@ -14,7 +14,7 @@ const knex = require('knex')({
 
 const jobs = JSON.parse(fs.readFileSync('./knex/db/jobs.json', 'utf8'));
 const columns = JSON.parse(fs.readFileSync('./knex/db/jobsColumns.json', 'utf8'));
-console.log(columns)
+
 knex.schema.dropTableIfExists('jobs').then(function () {
     knex.schema.createTable('jobs', function (table) {
         table.increments()

@@ -221,23 +221,13 @@ const getJobs = (request, response) => {
       response.status(403).send(err)
     }
     else {
-      // try {
-      //   const jobs = await prisma.jobs.findMany({})
-      //   jobs != null ? response.json(jobs) : response.json({
-      //     message: 'No user found',
-      //     authData
-      //   })
-      // }
-      // catch (err) {
-      //   response.status(406).send(err)
-      // }
       pool.query('SELECT * FROM jobs', (error, results) => {
         if (error) {
           res.status(403).send(error)
-            throw error;
+          throw error;
         }
         response.status(200).json(results.rows);
-    });
+      });
     }
   })
 }
