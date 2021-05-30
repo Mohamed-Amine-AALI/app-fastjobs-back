@@ -17,7 +17,7 @@ const verifyToken = (req, res, next) => {
   }
   else {
     console.log("403")
-    res.status(403)
+    res.status(403).send('Forbidden')
   }
 }
 
