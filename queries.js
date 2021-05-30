@@ -236,7 +236,7 @@ const getJobs = (request, response) => {
           res.status(403).send(error)
             throw error;
         }
-        res.status(200).json(results.rows);
+        response.status(200).json(results.rows);
     });
     }
   })
