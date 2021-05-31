@@ -206,15 +206,23 @@ const getJobs = (request, response) => {
   })
 }
 
-const getJobsByUserId = async (request, response) => {
-  const id = parseInt(request.params.id)
-  const getjob = await prisma.jobs.findUnique({
-    where: {
-      id: id,
+const getWaitingJobsByUserId = async (request, response) => {
+  jwt.verify(request.token, 'secretkey', async (err, authData) => {
+    if (err) {
+      response.status(403).send(err)
     }
-  })
-  getjob != null ? response.json(getjob) : response.json({
-    text: 'No user found'
+    else {
+      const jobberId = request.params.id;
+      pool.query("SELECT id FROM jobs WHERE jobber = $1 AND state = 'waiting'", [jobberId],
+        (error, results) => {
+          if (error) {
+            console.log("ERROR GETTING JOBS")
+            res.status(403).send(error)
+            throw error;
+          }
+          response.status(200).json(results.rows);
+        });
+    }
   })
 }
 
@@ -228,6 +236,6 @@ module.exports = {
   createJob,
   updateJob,
   deleteJob,
-  getJobsByUserId,
+  getWaitingJobsByUserId,
   getJobs
 }
