@@ -212,7 +212,9 @@ const getWaitingJobsByUserId = async (request, response) => {
       response.status(403).send(err)
     }
     else {
+      console.log(request)
       const jobberId = request.params.id;
+      console.log(jobberId)
       pool.query("SELECT id FROM jobs WHERE jobber = $1 AND state = 'waiting'", [jobberId],
         (error, results) => {
           if (error) {
