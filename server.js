@@ -49,6 +49,7 @@ app.post('/export/aws', require('./aws').exportAWS)
 
 // Jobs
 app.get('/jobs', verifyToken, db.getJobs)
+app.get('/jobs/:id', verifyToken, db.getJobsByUserId)
 app.get('/waitingJobs/:id', verifyToken, db.getWaitingJobsByUserId)
 app.get('/acceptedJobs/:id', verifyToken, db.getAcceptedJobsByUserId)
 app.post('/update/job/:id', verifyToken, db.updateJob)

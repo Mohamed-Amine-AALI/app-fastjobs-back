@@ -142,6 +142,7 @@ const createJob = async (request, response) => {
   })
 }
 
+// From status 'available' to 'waiting' when someone asks for a job
 const updateJob = async (request, response) => {
   const jobId = request.params.id;
   const jobberId = request.body.jobber
@@ -181,6 +182,7 @@ const deleteJob = async (request, response) => {
   })
 }
 
+// Returns jobs to display on the map
 const getJobs = (request, response) => {
   jwt.verify(request.token, 'secretkey', async (err, authData) => {
     if (err) {
@@ -199,13 +201,13 @@ const getJobs = (request, response) => {
   })
 }
 
+// Returns jobs that the user asked to do
 const getWaitingJobsByUserId = async (request, response) => {
   jwt.verify(request.token, 'secretkey', async (err, authData) => {
     if (err) {
       response.status(403).send(err)
     }
     else {
-      console.log(request.params)
       const jobberId = request.params.id;
       pool.query("SELECT id FROM jobs WHERE jobber = $1 AND state = 'waiting'", [jobberId],
         (error, results) => {
@@ -220,6 +222,28 @@ const getWaitingJobsByUserId = async (request, response) => {
   })
 }
 
+// Returns jobs created by user (tasker)
+const getJobsByUserId = async (request, response) => {
+  jwt.verify(request.token, 'secretkey', async (err, authData) => {
+    if (err) {
+      response.status(403).send(err)
+    }
+    else {
+      const taskerId = request.params.id;
+      pool.query("SELECT * FROM jobs WHERE tasker = $1", [taskerId],
+        (error, results) => {
+          if (error) {
+            res.status(403).send(error)
+            throw error;
+          }
+          response.status(200).json(results.rows);
+        }
+      );
+    }
+  })
+}
+
+// Returns jobs made by the user that have been accepted by someone else
 const getAcceptedJobsByUserId = async (request, response) => {
   jwt.verify(request.token, 'secretkey', async (err, authData) => {
     if (err) {
@@ -238,6 +262,8 @@ const getAcceptedJobsByUserId = async (request, response) => {
       );
     }
   })
+
+  
 }
 
 module.exports = {
@@ -252,5 +278,6 @@ module.exports = {
   deleteJob,
   getWaitingJobsByUserId,
   getAcceptedJobsByUserId,
+  getJobsByUserId,
   getJobs
 }
