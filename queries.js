@@ -34,12 +34,14 @@ const getUserById = async (request, response) => {
 }
 
 const login = (request, response) => {
-  const { email, password } = request.body
+  const { email, password } = request.body;
   pool.query('SELECT id, password FROM users WHERE email = $1', [email], (error, result) => {
     if (error) {
+      console.log('RENTRER ICI')
       response.status(400).json({ auth: false, message: "Email or password incorrect" })
     }
     else if (result.rows.length > 0) {
+      console.log('RENTRER LA')
       userPassword = result.rows[0].password
       const validPassword = bcrypt.compareSync(password, userPassword);
       if (!validPassword) {
