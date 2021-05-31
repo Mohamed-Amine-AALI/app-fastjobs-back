@@ -206,15 +206,15 @@ const updateJob = async (request, response) => {
 }
 
 // From status 'waiting' to 'inprogress' when tasker accepts request
-const updateJob = async (request, response) => {
+const acceptJobRequest = async (request, response) => {
   const jobId = request.params.id;
-  const taskerId = request.body.jobber
+  const taskerId = request.body.taskerId
   jwt.verify(request.token, 'secretkey', async (err, authData) => {
     if (err) {
       response.status(403).send(err)
     }
     else {
-      pool.query("UPDATE jobs SET state = 'inprogress' WHERE id = $1 AND tasker == $2", [jobId, jobtaskerIdId],
+      pool.query("UPDATE jobs SET state = 'inprogress' WHERE id = $1 AND tasker = $2", [jobId, taskerId],
         (error, results) => {
           if (error) {
             res.status(403).send(error)
@@ -337,6 +337,7 @@ module.exports = {
   login,
   createJob,
   updateJob,
+  acceptJobRequest,
   deleteJob,
   getWaitingJobsByUserId,
   getAcceptedJobsByUserId,
