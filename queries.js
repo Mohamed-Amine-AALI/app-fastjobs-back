@@ -38,6 +38,7 @@ const login = (request, response) => {
   pool.query('SELECT id, password FROM users WHERE email = $1', [email], (error, result) => {
     if (error) {
       console.log('RENTRER ICI')
+      console.log(error)
       response.status(400).json({ auth: false, message: "Email or password incorrect" })
     }
     else if (result.rows.length > 0) {
