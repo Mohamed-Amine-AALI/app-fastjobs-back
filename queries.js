@@ -5,11 +5,11 @@ const prisma = new PrismaClient()
 require('dotenv').config();
 const Pool = require('pg').Pool
 const pool = new Pool({
-  user: process.env.DB_USER2,
-  host: process.env.DB_HOST2,
-  database: process.env.DB_NAME2,
-  password: process.env.DB_PASS2,
-  port: process.env.DB_PORT2,
+  user: process.env.DB_USER,
+  host: process.env.DB_HOST,
+  database: process.env.DB_NAME,
+  password: process.env.DB_PASS,
+  port: process.env.DB_PORT,
   ssl: { rejectUnauthorized: false }
 })
 
@@ -91,19 +91,35 @@ const createUser = async (request, response) => {
 }
 
 const updateUser = async (request, response) => {
-  //console.log(request.body);
+  //console.log(request.params.id);
   const id = parseInt(request.params.id)
-  const { firstname, email } = request.body
-  pool.query(
-    'UPDATE users SET Firstname = $1, Email = $2 WHERE id = $3',
-    [firstname, email, id],
-    (error, results) => {
-      if (error) {
-        throw error
-      }
-      response.status(200).send(`User modified with ID: ${id}`)
-    }
-  )
+  const { firstname, email ,lastname,phone} = request.body
+  await prisma.users.update({
+    where: {
+      id: id
+    },
+    data: {
+      lastname: lastname,
+      firstname: firstname,
+      email: email,
+      phone: phone,
+    },
+  }).then((res)=>{
+    //console.log(res)
+    response.status(200).send(`User modified with ID: ${id}`)
+  }).catch((err)=>{
+    response.status(400).send(`Error occured`)
+  })
+  // pool.query(
+  //   'UPDATE users SET Firstname = $1, Email = $2,Lastname=$3,Phone=$4 WHERE id = $5',
+  //   [firstname, email, lastname,phone,id],
+  //   (error, results) => {
+  //     if (error) {
+  //       throw error
+  //     }
+  //     console.log(`Results: ${results}\n Id: ${id}`);
+  //   }
+  // )
 }
 
 const deleteUser = (request, response) => {
