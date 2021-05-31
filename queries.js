@@ -33,19 +33,6 @@ const getUserById = async (request, response) => {
   })
 }
 
-const verifyToken = (req, res, next) => {
-  const bearerHeader = req.headers['authorization']
-  if (typeof baererHeader !== 'undefined') {
-    const bearer = bearerHeader.split(' ');
-    const bearerToken = bearer[1]
-    req.token = bearerToken
-    next()
-  }
-  else {
-    res.status(403)
-  }
-}
-
 const login = (request, response) => {
   const { email, password } = request.body
   pool.query('SELECT id, password FROM users WHERE email = $1', [email], (error, result) => {
@@ -170,7 +157,7 @@ const updateJob = async (request, response) => {
       response.status(403).send(err)
     }
     else {
-      pool.query("UPDATE jobs SET jobber = $1, state = 'inprogress' WHERE id = $2", [jobberId, jobId],
+      pool.query("UPDATE jobs SET jobber = $1, state = 'waiting' WHERE id = $2", [jobberId, jobId],
         (error, results) => {
           if (error) {
             console.log("ERROR UPDATING JOB")
@@ -219,7 +206,7 @@ const getJobs = (request, response) => {
   })
 }
 
-const getJob = async (request, response) => {
+const getJobsByUserId = async (request, response) => {
   const id = parseInt(request.params.id)
   const getjob = await prisma.jobs.findUnique({
     where: {
@@ -241,6 +228,6 @@ module.exports = {
   createJob,
   updateJob,
   deleteJob,
-  getJob,
+  getJobsByUserId,
   getJobs
 }
