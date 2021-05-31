@@ -5,11 +5,11 @@ const prisma = new PrismaClient()
 require('dotenv').config();
 const Pool = require('pg').Pool
 const pool = new Pool({
-  user: process.env.DB_USER,
-  host: process.env.DB_HOST,
-  database: process.env.DB_NAME,
-  password: process.env.DB_PASS,
-  port: process.env.DB_PORT,
+  user: process.env.DB_USER2,
+  host: process.env.DB_HOST2,
+  database: process.env.DB_NAME2,
+  password: process.env.DB_PASS2,
+  port: process.env.DB_PORT2,
   ssl: { rejectUnauthorized: false }
 })
 
