@@ -37,24 +37,17 @@ const login = (request, response) => {
   const { email, password } = request.body
   pool.query('SELECT id, password FROM users WHERE email = $1', [email], (error, result) => {
     if (error) {
-      console.log('ERROR :')
-      console.log(error)
       response.status(400).json({ auth: false, message: "Email or password incorrect" })
     }
     else if (result.rows.length > 0) {
-      console.log("RESULT :")
-      console.log(result)
       userPassword = result.rows[0].password
       const validPassword = bcrypt.compareSync(password, userPassword);
       if (!validPassword) {
-        console.log("INVALID PASSWORD")
         response.status(400).json({ message: 'Incorect password' })
       }
       else {
-        console.log('VALID PASSWORD :')
         userId = result.rows[0].id
         jwt.sign({ user: userId }, 'secretkey', (err, token) => {
-          console.log(token)
           response.status(200).json({ auth: true, token: token, userId: userId })
         })
       }
@@ -73,7 +66,7 @@ const createUser = async (request, response) => {
       response.status(400).send(`Can't hash password, retry`)
     }
   });
-  const insertuser = await prisma.users.create({
+  await prisma.users.create({
     data: {
       lastname: lastname,
       firstname: firstname,
@@ -97,7 +90,6 @@ const createUser = async (request, response) => {
 const updateUser = (request, response) => {
   const id = parseInt(request.params.id)
   const { firstname, email } = request.body
-
   pool.query(
     'UPDATE users SET Firstname = $1, Email = $2 WHERE id = $3',
     [firstname, email, id],
@@ -112,7 +104,6 @@ const updateUser = (request, response) => {
 
 const deleteUser = (request, response) => {
   const id = parseInt(request.params.id)
-
   pool.query('DELETE FROM users WHERE id = $1', [id], (error, results) => {
     if (error) {
       throw error
@@ -125,7 +116,7 @@ const deleteUser = (request, response) => {
 
 const createJob = async (request, response) => {
   const { Name, Description, Categories, Date, Remuneration, State, Long, Lat, Tasker, Jobber } = request.body
-  const insertjob = await prisma.jobs.create({
+  await prisma.jobs.create({
     data: {
       Name: Name,
       Description: Description,
@@ -219,7 +210,6 @@ const getWaitingJobsByUserId = async (request, response) => {
       pool.query("SELECT id FROM jobs WHERE jobber = $1 AND state = 'waiting'", [jobberId],
         (error, results) => {
           if (error) {
-            console.log("ERROR GETTING JOBS")
             res.status(403).send(error)
             throw error;
           }
@@ -240,7 +230,6 @@ const getAcceptedJobsByUserId = async (request, response) => {
       pool.query("SELECT id FROM jobs WHERE tasker = $1 AND state = 'waiting'", [taskerId],
         (error, results) => {
           if (error) {
-            console.log("ERROR GETTING JOBS")
             res.status(403).send(error)
             throw error;
           }
