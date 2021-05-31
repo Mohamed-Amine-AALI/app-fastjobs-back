@@ -47,7 +47,7 @@ app.post('/export/aws', require('./aws').exportAWS)
 app.get('/jobs', verifyToken, db.getJobs)
 app.post('/job/:id', db.getJob)
 app.post('/create/job', db.createJob)
-app.post('/update/job/:id', verifyToken, db.updateJob)
+app.post('/update/job/:id', verifyToken, db.getJobsByUserId)
 app.delete('/delete/job/:id', db.deleteJob)
 app.listen(port, () => {
   console.log(`App running on port ${port}.`)
