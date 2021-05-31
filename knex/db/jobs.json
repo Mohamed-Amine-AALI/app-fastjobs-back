@@ -1,14 +1,38 @@
 [
-    {
-      "Name": "montage meuble",
-      "Description": "Besoin aide montage meuble IKEA",
-      "Categories": "Aide meuble",
-      "Date": "2020-05-20",
-      "Remuneration": "10 euros",
-      "State": "Disponible",
-      "Long": "2.3488",
-      "Lat": "48.8534",
-      "Tasker": "1",
-      "Jobber": "2"
-    }
+  {
+    "name": "Montage meuble",
+    "description": "Je cherche quelqu'un pour m'aider à monter mes meubles",
+    "category": "Bricolage",
+    "date": "30/05/2021",
+    "state": "available",
+    "price": 20,
+    "lat": 48.90803146362305,
+    "long": 2.438076972961426,
+    "tasker": 25,
+    "jobber": null
+  },
+  {
+    "name": "Ménage à la maison",
+    "description": "Je cherche quelqu'un pour faire le ménage dans toutes les pièces de la maison",
+    "category": "Nettoyage",
+    "date": "30/05/2021",
+    "state": "available",
+    "price": 15,
+    "lat": 48.90524673461914,
+    "long": 2.4425241947174072,
+    "tasker": 25,
+    "jobber": null
+  },
+  {
+    "name": "Couper le gazon",
+    "description": "Je cherche quelqu'un pour couper le gazon",
+    "category": "Jardinage",
+    "date": "30/05/2021",
+    "price": 10,
+    "state": "available",
+    "long": 48.90541458129883,
+    "lat": 2.4478042125701904,
+    "tasker": 25,
+    "jobber": null
+  }
 ]

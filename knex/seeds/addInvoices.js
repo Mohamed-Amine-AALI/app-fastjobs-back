@@ -3,13 +3,14 @@ require('dotenv').config();
 const knex = require('knex')({
     client: 'pg',
     connection: {
-      host: process.env.DB_HOST,
-      user: process.env.DB_USER,
-      password: process.env.DB_PASS,
-      database: process.env.DB_NAME  }
-  })
+        host: process.env.DB_HOST,
+        user: process.env.DB_USER,
+        password: process.env.DB_PASS,
+        database: process.env.DB_NAME
+    }
+})
 
-let columns = new Set();                                            
+let columns = new Set();
 let invoices = JSON.parse(fs.readFileSync('../startupweek-back/knex/db/invoices.json', 'utf8'));
 
 invoices.forEach(invoice => {
@@ -18,15 +19,15 @@ invoices.forEach(invoice => {
     });
 });
 knex.schema.dropTableIfExists('invoices').then(function () {
-    knex.schema.createTable('invoices',function (table) {
+    knex.schema.createTable('invoices', function (table) {
         table.increments()
         columns.forEach(column => {
             table.string(column, 10000)
         })
-    }).then (function() {
+    }).then(function () {
         return knex("invoices").insert(invoices)
-    }).then(function(){
+    }).then(function () {
         console.log(' All invoices imported into database ! Closing connection');
         knex.destroy();
-    })    
+    })
 })

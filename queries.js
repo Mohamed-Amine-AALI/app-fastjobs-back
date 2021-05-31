@@ -14,86 +14,97 @@ const pool = new Pool({
 })
 
 const getUsers = async (request, response) => {
-    const getusers = await prisma.users.findMany({
-      })
-      getusers!=null ? response.json(getusers) : response.json({
-        text: 'No user found'
-       })
-   }
+  const getusers = await prisma.users.findMany({
+  })
+  getusers != null ? response.json(getusers) : response.json({
+    text: 'No user found'
+  })
+}
 
 const getUserById = async (request, response) => {
   const id = parseInt(request.params.id)
   const getuser = await prisma.users.findUnique({
-          where: {
-            id: id,
-           }
-         })
-       getUser!=null ? response.json(getUser) : response.json({
-         text: 'No user found'
-       })
-}
-const login = (request, response) => {
-  const { username, password } = request.body
-
-  // const validPassword = await bcrypt.compare(body.password, user.password);
-
-  pool.query('SELECT * FROM users WHERE email = $1', [username], (error, results) => {
-    if (error) {
-      throw error
+    where: {
+      id: id,
     }
-    bcrypt.compareSync(password, results.rows[0].password);
-    const validPassword = bcrypt.compareSync(password, results.rows[0].password);
-    if (!validPassword) {
-      response.status(400).json({ text: 'Incorect password' })
+  })
+  getuser != null ? response.json(getuser) : response.json({
+    text: 'No user found'
+  })
+}
 
-    } else {
-      let token = jwt.sign({ user: results.rows[0].id }, 'key')
-      jwt.verify(token, 'key', function (err, data) {
-        if (err) {
-          throw err
-        } else {
-          response.status(200).json(results.rows.concat({ 'token': token }))
-        }
-      })
+const login = (request, response) => {
+  const { email, password } = request.body
+  pool.query('SELECT id, password FROM users WHERE email = $1', [email], (error, result) => {
+    if (error) {
+      response.status(400).json({ auth: false, message: "Email or password incorrect" })
+    }
+    else if (result.rows.length > 0) {
+      userPassword = result.rows[0].password
+      const validPassword = bcrypt.compareSync(password, userPassword);
+      if (!validPassword) {
+        response.status(400).json({ message: 'Incorect password' })
+      }
+      else {
+        userId = result.rows[0].id
+        jwt.sign({ user: userId }, 'secretkey', (err, token) => {
+          response.status(200).json({ auth: true, token: token, userId: userId })
+        })
+      }
+    }
+    else {
+      console.log('NO USER FOUND')
+      response.status(404).json({ auth: false, message: "No user found" })
     }
   })
 }
-const createUser = (request, response) => {
-  //console.log(request.body);
-  const { lastname, firstname, email, password, phone, adress } = request.body
+
+const createUser = async (request, response) => {
+  const { lastname, firstname, email, password, phone } = request.body
   let hash = bcrypt.hashSync(password, 10, (err, hash) => {
     if (err) {
       response.status(400).send(`Can't hash password, retry`)
     }
   });
-
-  pool.query('INSERT INTO users (lastname,firstname,email,password,phone,adress) VALUES ($1, $2, $3, $4, $5, $6)',
-    [lastname, firstname, email, hash, phone, adress],
-    (error, results) => {
-      if (error) {
-        throw error
-      }
-      response.status(201).send(`User added with ${firstname} ${lastname}`)
+  await prisma.users.create({
+    data: {
+      lastname: lastname,
+      firstname: firstname,
+      email: email,
+      password: hash,
+      phone: phone,
     }
-  )
+  }).then((res) => {
+    if (res != null) {
+      response.json({
+        text: `User added with id : ${res.id}`
+      })
+    }
+  }).catch((e) => {
+    response.json({
+      text: `User can't be added`
+    })
+  })
 }
 
 const updateUser = async (request, response) => {
   //console.log(request.body);
   const id = parseInt(request.params.id)
   const { firstname, email } = request.body
-  const updateUser = await prisma.users.update({
-    where: { id: Number(id) },
-    data: {
-      firstname : firstname,
-      email : email },
-  })
-  response.status(200).send(`User modified with ID: ${updateUser.id}`)
+  pool.query(
+    'UPDATE users SET Firstname = $1, Email = $2 WHERE id = $3',
+    [firstname, email, id],
+    (error, results) => {
+      if (error) {
+        throw error
+      }
+      response.status(200).send(`User modified with ID: ${id}`)
+    }
+  )
 }
 
 const deleteUser = (request, response) => {
   const id = parseInt(request.params.id)
-
   pool.query('DELETE FROM users WHERE id = $1', [id], (error, results) => {
     if (error) {
       throw error
@@ -101,6 +112,8 @@ const deleteUser = (request, response) => {
     response.status(200).send(`User deleted with ID: ${id}`)
   })
 }
+
+//Invoices
 
 const getInvoices = (request, response) => {
   pool.query('SELECT * FROM invoices ORDER BY id ASC', (error, results) => {
@@ -139,15 +152,177 @@ const createInvoice = async (request, response) => {
   response.status(201).send(`Invoice added with ID: ${createInvoice.id}`)
 }
 
-module.exports = {
-    getUsers,
-    getUserById,
-    createUser,
-    updateUser,
-    deleteUser,
-    login,
-    getInvoices,
-    getInvoiceById,
-    createInvoice
-  }
   
+// JOBS
+
+const createJob = async (request, response) => {
+  const { Name, Description, Categories, Date, Remuneration, State, Long, Lat, Tasker, Jobber } = request.body
+  await prisma.jobs.create({
+    data: {
+      Name: Name,
+      Description: Description,
+      Categories: Categories,
+      Date: Date,
+      Remuneration: Remuneration,
+      State: State,
+      Long: Long,
+      Lat: Lat,
+      Tasker: Tasker,
+      Jobber: Jobber
+    }
+  }).then((res) => {
+    if (res != null) {
+      response.json({
+        text: `Job added with id : ${res.id}`
+      })
+    }
+  }).catch((e) => {
+    response.json({
+      text: `Job can't be added`
+    })
+  })
+}
+
+// From status 'available' to 'waiting' when someone asks for a job
+const updateJob = async (request, response) => {
+  const jobId = request.params.id;
+  const jobberId = request.body.jobber
+  jwt.verify(request.token, 'secretkey', async (err, authData) => {
+    if (err) {
+      response.status(403).send(err)
+    }
+    else {
+      pool.query("UPDATE jobs SET jobber = $1, state = 'waiting' WHERE id = $2", [jobberId, jobId],
+        (error, results) => {
+          if (error) {
+            console.log("ERROR UPDATING JOB")
+            res.status(403).send(error)
+            throw error;
+          }
+          response.status(200).json(results);
+        });
+      console.log(request)
+    }
+  })
+}
+
+const deleteJob = async (request, response) => {
+  const id = parseInt(request.params.id)
+  const deletejob = await prisma.jobs.delete({
+    where: { id: id },
+  }).then((res) => {
+    if (res != null) {
+      response.json({
+        text: `Job deleted with id : ${res.id}`
+      })
+    }
+  }).catch((e) => {
+    response.json({
+      text: `Job can't be deleted`
+    })
+  })
+}
+
+// Returns jobs to display on the map
+const getJobs = (request, response) => {
+  jwt.verify(request.token, 'secretkey', async (err, authData) => {
+    if (err) {
+      response.status(403).send(err)
+    }
+    else {
+      pool.query('SELECT * FROM jobs', (error, results) => {
+        if (error) {
+          console.log("ERROR GETTING JOBS")
+          res.status(403).send(error)
+          throw error;
+        }
+        response.status(200).json(results.rows);
+      });
+    }
+  })
+}
+
+// Returns jobs that the user asked to do
+const getWaitingJobsByUserId = async (request, response) => {
+  jwt.verify(request.token, 'secretkey', async (err, authData) => {
+    if (err) {
+      response.status(403).send(err)
+    }
+    else {
+      const jobberId = request.params.id;
+      pool.query("SELECT id FROM jobs WHERE jobber = $1 AND state = 'waiting'", [jobberId],
+        (error, results) => {
+          if (error) {
+            res.status(403).send(error)
+            throw error;
+          }
+          response.status(200).json(results.rows);
+        }
+      );
+    }
+  })
+}
+
+// Returns jobs created by user (tasker)
+const getJobsByUserId = async (request, response) => {
+  jwt.verify(request.token, 'secretkey', async (err, authData) => {
+    if (err) {
+      response.status(403).send(err)
+    }
+    else {
+      const taskerId = request.params.id;
+      pool.query("SELECT * FROM jobs WHERE tasker = $1", [taskerId],
+        (error, results) => {
+          if (error) {
+            res.status(403).send(error)
+            throw error;
+          }
+          response.status(200).json(results.rows);
+        }
+      );
+    }
+  })
+}
+
+// Returns jobs made by the user that have been accepted by someone else
+const getAcceptedJobsByUserId = async (request, response) => {
+  jwt.verify(request.token, 'secretkey', async (err, authData) => {
+    if (err) {
+      response.status(403).send(err)
+    }
+    else {
+      const taskerId = request.params.id;
+      pool.query("SELECT id FROM jobs WHERE tasker = $1 AND state = 'waiting'", [taskerId],
+        (error, results) => {
+          if (error) {
+            res.status(403).send(error)
+            throw error;
+          }
+          response.status(200).json(results.rows);
+        }
+      );
+    }
+  })
+
+  
+}
+
+module.exports = {
+  getUsers,
+  getUserById,
+  createUser,
+  updateUser,
+  deleteUser,
+  login,
+  createJob,
+  updateJob,
+  deleteJob,
+  getWaitingJobsByUserId,
+  getAcceptedJobsByUserId,
+  getJobsByUserId,
+  getJobs,
+  getInvoices,
+  getInvoiceById,
+  createInvoice
+}
+

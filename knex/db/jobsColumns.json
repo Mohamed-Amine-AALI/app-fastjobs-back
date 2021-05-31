@@ -1,0 +1,42 @@
+[
+    {
+        "columnName": "name",
+        "columnType": "string"
+    },
+    {
+        "columnName": "category",
+        "columnType": "string"
+    },
+    {
+        "columnName": "date",
+        "columnType": "string"
+    },
+    {
+        "columnName": "tasker",
+        "columnType": "integer"
+    },
+    {
+        "columnName": "jobber",
+        "columnType": "integer"
+    },
+    {
+        "columnName": "description",
+        "columnType": "string"
+    },
+    {
+        "columnName": "price",
+        "columnType": "integer"
+    },
+    {
+        "columnName": "state",
+        "columnType": "string"
+    },
+    {
+        "columnName": "lat",
+        "columnType": "string"
+    },
+    {
+        "columnName": "long",
+        "columnType": "string"
+    }
+]
