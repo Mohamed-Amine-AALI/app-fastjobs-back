@@ -34,6 +34,7 @@ const getUserById = async (request, response) => {
 }
 
 const login = (request, response) => {
+  console.log(process.env)
   const { email, password } = request.body;
   pool.query('SELECT id, password FROM users WHERE email = $1', [email], (error, result) => {
     if (error) {
