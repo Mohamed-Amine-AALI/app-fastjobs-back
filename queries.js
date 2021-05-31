@@ -34,12 +34,15 @@ const getUserById = async (request, response) => {
 }
 
 const login = (request, response) => {
-  const { email, password } = request.body
+  const { email, password } = request.body;
   pool.query('SELECT id, password FROM users WHERE email = $1', [email], (error, result) => {
     if (error) {
+      console.log('RENTRER ICI')
+      console.log(error)
       response.status(400).json({ auth: false, message: "Email or password incorrect" })
     }
     else if (result.rows.length > 0) {
+      console.log('RENTRER LA')
       userPassword = result.rows[0].password
       const validPassword = bcrypt.compareSync(password, userPassword);
       if (!validPassword) {
@@ -195,7 +198,28 @@ const updateJob = async (request, response) => {
       pool.query("UPDATE jobs SET jobber = $1, state = 'waiting' WHERE id = $2", [jobberId, jobId],
         (error, results) => {
           if (error) {
-            console.log("ERROR UPDATING JOB")
+            res.status(403).send(error)
+            throw error;
+          }
+          response.status(200).json(results);
+        });
+      console.log(request)
+    }
+  })
+}
+
+// From status 'waiting' to 'inprogress' when tasker accepts request
+const acceptJobRequest = async (request, response) => {
+  const jobId = request.params.id;
+  const taskerId = request.body.taskerId
+  jwt.verify(request.token, 'secretkey', async (err, authData) => {
+    if (err) {
+      response.status(403).send(err)
+    }
+    else {
+      pool.query("UPDATE jobs SET state = 'inprogress' WHERE id = $1 AND tasker = $2", [jobId, taskerId],
+        (error, results) => {
+          if (error) {
             res.status(403).send(error)
             throw error;
           }
@@ -316,6 +340,7 @@ module.exports = {
   login,
   createJob,
   updateJob,
+  acceptJobRequest,
   deleteJob,
   getWaitingJobsByUserId,
   getAcceptedJobsByUserId,
