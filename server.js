@@ -45,7 +45,7 @@ app.post('/send/mail', require('./mail').sendMail)
 app.post('/export/aws', require('./aws').exportAWS)
 //jobs
 app.get('/jobs', verifyToken, db.getJobs)
-app.post('/waitingJobs/:id', verifyToken, db.getWaitingJobsByUserId)
+app.get('/waitingJobs/:id', verifyToken, db.getWaitingJobsByUserId)
 app.post('/create/job', db.createJob)
 app.post('/update/job/:id', verifyToken, db.updateJob)
 app.delete('/delete/job/:id', db.deleteJob)
