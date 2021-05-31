@@ -1,0 +1,62 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
+model aa {
+  a Unsupported("char")?
+
+  @@ignore
+}
+
+model invoices {
+  id          Int     @id @default(autoincrement())
+  NumFacture  String? @db.VarChar(10000)
+  Date        String? @db.VarChar(10000)
+  Description String? @db.VarChar(10000)
+  IdJob       String? @db.VarChar(10000)
+  Tasker      String? @db.VarChar(10000)
+  Jobber      String? @db.VarChar(10000)
+}
+
+model job {
+  id Int @id
+}
+
+model jobs {
+  id           Int     @id @default(autoincrement())
+  Name         String? @db.VarChar(10000)
+  Description  String? @db.VarChar(10000)
+  Categories   String? @db.VarChar(10000)
+  Date         String? @db.VarChar(10000)
+  Remuneration String? @db.VarChar(10000)
+  State        String? @db.VarChar(10000)
+  Long         String? @db.VarChar(10000)
+  Lat          String? @db.VarChar(10000)
+  Tasker       String? @db.VarChar(10000)
+  Jobber       String? @db.VarChar(10000)
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
+model test {
+  id   Int?
+  desc Unsupported("char")?
+
+  @@ignore
+}
+
+model users {
+  id        Int     @id @default(autoincrement())
+  lastname  String? @db.VarChar(10000)
+  firstname String? @db.VarChar(10000)
+  email     String? @db.VarChar(10000)
+  password  String? @db.VarChar(10000)
+  phone     String? @db.VarChar(10000)
+  adress    String? @db.VarChar(10000)
+  stripeID  String? @db.VarChar(10000)
+}

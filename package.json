@@ -4,6 +4,7 @@
   "description": "",
   "main": "knexfile.js",
   "dependencies": {
+    "@prisma/client": "^2.22.1",
     "aws-sdk": "^2.907.0",
     "bcrypt": "^5.0.1",
     "body-parser": "^1.19.0",
@@ -15,6 +16,7 @@
     "node-mailjet": "^3.3.1",
     "nodemon": "^2.0.7",
     "pg": "^8.6.0",
+    "prisma": "^2.22.1",
     "uuid": "^8.3.2"
   },
   "devDependencies": {
