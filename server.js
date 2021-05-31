@@ -32,22 +32,27 @@ app.use(
 app.get('/', (request, response) => {
   response.json({ info: 'Node.js, Express, and Postgres API' })
 })
-//users
+
+// Users
 app.get('/users', db.getUsers)
 app.get('/users/:id', db.getUserById)
-app.post('/create/users', db.createUser)
 app.put('/update/users/:id', db.updateUser)
 app.delete('/delete/users/:id', db.deleteUser)
-//jwt
+
+// JWT
 app.post('/api/login', db.login)
-//services
+app.post('/create/users', db.createUser)
+
+// Services
 app.post('/send/mail', require('./mail').sendMail)
 app.post('/export/aws', require('./aws').exportAWS)
-//jobs
+
+// Jobs
 app.get('/jobs', verifyToken, db.getJobs)
 app.get('/waitingJobs/:id', verifyToken, db.getWaitingJobsByUserId)
-app.post('/create/job', db.createJob)
+app.get('/acceptedJobs/:id', verifyToken, db.getAcceptedJobsByUserId)
 app.post('/update/job/:id', verifyToken, db.updateJob)
+app.post('/create/job', db.createJob)
 app.delete('/delete/job/:id', db.deleteJob)
 app.listen(port, () => {
   console.log(`App running on port ${port}.`)

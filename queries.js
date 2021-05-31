@@ -121,6 +121,8 @@ const deleteUser = (request, response) => {
   })
 }
 
+// JOBS
+
 const createJob = async (request, response) => {
   const { Name, Description, Categories, Date, Remuneration, State, Long, Lat, Tasker, Jobber } = request.body
   const insertjob = await prisma.jobs.create({
@@ -228,6 +230,27 @@ const getWaitingJobsByUserId = async (request, response) => {
   })
 }
 
+const getAcceptedJobsByUserId = async (request, response) => {
+  jwt.verify(request.token, 'secretkey', async (err, authData) => {
+    if (err) {
+      response.status(403).send(err)
+    }
+    else {
+      const taskerId = request.params.id;
+      pool.query("SELECT id FROM jobs WHERE tasker = $1 AND state = 'waiting'", [taskerId],
+        (error, results) => {
+          if (error) {
+            console.log("ERROR GETTING JOBS")
+            res.status(403).send(error)
+            throw error;
+          }
+          response.status(200).json(results.rows);
+        }
+      );
+    }
+  })
+}
+
 module.exports = {
   getUsers,
   getUserById,
@@ -239,5 +262,6 @@ module.exports = {
   updateJob,
   deleteJob,
   getWaitingJobsByUserId,
+  getAcceptedJobsByUserId,
   getJobs
 }
