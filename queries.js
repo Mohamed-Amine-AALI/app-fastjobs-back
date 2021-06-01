@@ -83,44 +83,56 @@ const createUser = async (request, response) => {
   }).then((res) => {
     if (res != null) {
       const userBucket = lastname.toLowerCase() + firstname.toLowerCaset()
-      console.log(userBucketl)
-      const params = {
-        Bucket: userBucket,
-        CreateBucketConfiguration: {
-          // Set your region here
-          LocationConstraint: "eu-west-3"
-        }
-      };
-      const s3 = new AWS.S3({
+      AWS.config.update({
+        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
         accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY
-      });
-      s3.createBucket(params, function (err, data) {
-        if (err) console.log(err, err.stack);
-        else {
-          console.log('Bucket Created Successfully', data.Location);
-          const fileContent = fs.readFileSync('./assets/default-profile.png');
+        region: "eu-west-3"
+      })
+      var bucketPromise = new AWS.S3({ apiVersion: '2006-03-01' }).createBucket({ Bucket: bucketName }).promise();
+      bucketPromise.then(function (data) {
+        response.json({
+          text: `User added with id : ${res.id}`
+        })
+        // var objectParams = { Bucket: userBucket, Key: 'default-profile' };
+        // var uploadPromise = new AWS.S3({ apiVersion: '2006-03-01' }).putObject(objectParams).promise();
+        // uploadPromise.then(
+        //   function (data) {
+        //     res.json({
+        //       text: `Successfully uploaded data to ${bucketName}/${keyName}`
+        //     })
+        //   });
+      }).catch(
+        function (err) {
+          res.json({
+            text: 'error'
+          })
+        });
+      // s3.createBucket(params, function (err, data) {
+      //   if (err) console.log(err, err.stack);
+      //   else {
+      //     console.log('Bucket Created Successfully', data.Location);
+      //     const fileContent = fs.readFileSync('./assets/default-profile.png');
 
-          // Setting up S3 upload parameters
-          console.log(userBucket)
-          const params = {
-            Bucket: userBucket,
-            Key: 'default-profile.png', // File name you want to save as in S3
-            Body: fileContent
-          };
+      //     // Setting up S3 upload parameters
+      //     console.log(userBucket)
+      //     const params = {
+      //       Bucket: userBucket,
+      //       Key: 'default-profile.png', // File name you want to save as in S3
+      //       Body: fileContent
+      //     };
 
-          // Uploading files to the bucket
-          s3.upload(params, function (err, data) {
-            if (err) {
-              throw err;
-            }
-            console.log(`File uploaded successfully. ${data.Location}`);
-            response.json({
-              text: `User added with id : ${res.id}`
-            })
-          });
-        }
-      });
+      //     // Uploading files to the bucket
+      //     s3.upload(params, function (err, data) {
+      //       if (err) {
+      //         throw err;
+      //       }
+      //       console.log(`File uploaded successfully. ${data.Location}`);
+      //       response.json({
+      //         text: `User added with id : ${res.id}`
+      //       })
+      //     });
+      //   }
+      // });
     }
   }).catch((e) => {
     response.json({
