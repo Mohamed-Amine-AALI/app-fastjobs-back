@@ -143,15 +143,16 @@ const updateUser = async (request, response) => {
           id: id
         },
         data: {
-          lastname: lastname,
-          firstname: firstname,
-          email: email,
-          phone: phone,
+          lastname: request.body.lastname,
+          firstname: request.body.firstname,
+          email: request.body.email,
+          phone: request.body.phone,
         },
       }).then((res) => {
-        //console.log(res)
+        console.log(res)
         response.status(200).send(`User modified with ID: ${id}`)
       }).catch((err) => {
+        console.log(err)
         response.status(400).send(`Error occured`)
       })
     }
