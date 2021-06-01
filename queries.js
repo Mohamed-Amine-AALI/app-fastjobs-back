@@ -131,8 +131,7 @@ const createUser = async (request, response) => {
 const updateUser = async (request, response) => {
   //console.log(request.params.id);
   console.log(request.body)
-  const id = request.params.id;
-  const { firstname, email, lastname, phone } = request.body
+  const id = +request.params.id;
   jwt.verify(request.token, 'secretkey', async (err, authData) => {
     if (err) {
       response.status(403).send(err)
@@ -241,7 +240,7 @@ const createJob = async (request, response) => {
 
 // From status 'available' to 'waiting' when someone asks for a job
 const updateJob = async (request, response) => {
-  const jobId = +request.params.id;
+  const jobId = request.params.id;
   const jobberId = request.body.jobber
   jwt.verify(request.token, 'secretkey', async (err, authData) => {
     if (err) {
