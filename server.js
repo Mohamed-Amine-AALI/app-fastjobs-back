@@ -47,7 +47,6 @@ app.post('/create/invoices', db.createInvoice)
 
 // Services
 app.post('/send/mail', require('./mail').sendMail)
-app.post('/export/aws', require('./aws').exportAWS)
 
 // Jobs
 app.get('/jobs', verifyToken, db.getJobs)
