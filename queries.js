@@ -130,13 +130,14 @@ const createUser = async (request, response) => {
 
 const updateUser = async (request, response) => {
   //console.log(request.params.id);
+  console.log(request.body)
   const id = request.params.id;
   const { firstname, email, lastname, phone } = request.body
   jwt.verify(request.token, 'secretkey', async (err, authData) => {
     if (err) {
       response.status(403).send(err)
     }
-    else{
+    else {
       await prisma.users.update({
         where: {
           id: id
@@ -155,17 +156,6 @@ const updateUser = async (request, response) => {
       })
     }
   })
-  // pool.query(
-  //   'UPDATE users SET Firstname = $1, Email = $2,Lastname=$3,Phone=$4 WHERE id = $5',
-  //   [firstname, email, lastname,phone,id],
-  //   (error, results) => {
-  //     if (error) {
-  //       throw error
-  //     }
-  //     console.log(`Results: ${results}\n Id: ${id}`);
-  //   }
-  // )
-  
 }
 
 const deleteUser = (request, response) => {
