@@ -130,23 +130,30 @@ const createUser = async (request, response) => {
 
 const updateUser = async (request, response) => {
   //console.log(request.params.id);
-  const id = parseInt(request.params.id)
+  const id = request.params.id;
   const { firstname, email, lastname, phone } = request.body
-  await prisma.users.update({
-    where: {
-      id: id
-    },
-    data: {
-      lastname: lastname,
-      firstname: firstname,
-      email: email,
-      phone: phone,
-    },
-  }).then((res) => {
-    //console.log(res)
-    response.status(200).send(`User modified with ID: ${id}`)
-  }).catch((err) => {
-    response.status(400).send(`Error occured`)
+  jwt.verify(request.token, 'secretkey', async (err, authData) => {
+    if (err) {
+      response.status(403).send(err)
+    }
+    else{
+      await prisma.users.update({
+        where: {
+          id: id
+        },
+        data: {
+          lastname: lastname,
+          firstname: firstname,
+          email: email,
+          phone: phone,
+        },
+      }).then((res) => {
+        //console.log(res)
+        response.status(200).send(`User modified with ID: ${id}`)
+      }).catch((err) => {
+        response.status(400).send(`Error occured`)
+      })
+    }
   })
   // pool.query(
   //   'UPDATE users SET Firstname = $1, Email = $2,Lastname=$3,Phone=$4 WHERE id = $5',
@@ -158,6 +165,7 @@ const updateUser = async (request, response) => {
   //     console.log(`Results: ${results}\n Id: ${id}`);
   //   }
   // )
+  
 }
 
 const deleteUser = (request, response) => {
