@@ -1,7 +1,8 @@
 require('dotenv').config();
 const mailjet = require('node-mailjet')
   .connect(process.env.MAILJET_API_KEY, process.env.MAILJET_API_SECRET_KEY)
-exports.sendMail = (req, res, email = null) => {
+
+exports.sendMail = async (req, res, email = null) => {
   console.log(req.body)
   email == null ? req.body.email : email
   if (email != null) {
@@ -30,10 +31,10 @@ exports.sendMail = (req, res, email = null) => {
         })
     request
       .then((result) => {
-        response.status(200).send("user created")
+        res.status(200).send("user created")
       })
       .catch((err) => {
-        res.send("Mail error")
+        res.status(503).send("Mail error")
       })
   } else {
     res.send("Incorect mail")
