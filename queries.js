@@ -88,7 +88,7 @@ const createUser = async (request, response) => {
         accessKeyId: process.env.AWS_ACCESS_KEY_ID,
         region: "eu-west-3"
       })
-      var bucketPromise = new AWS.S3({ apiVersion: '2006-03-01' }).createBucket({ Bucket: bucketName }).promise();
+      var bucketPromise = new AWS.S3({ apiVersion: '2006-03-01' }).createBucket({ Bucket: userBucket }).promise();
       bucketPromise.then(function (data) {
         response.json({
           text: `User added with id : ${res.id}`
@@ -103,6 +103,7 @@ const createUser = async (request, response) => {
         //   });
       }).catch(
         function (err) {
+          console.log(err)
           res.json({
             text: 'error'
           })
