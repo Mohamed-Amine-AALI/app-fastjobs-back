@@ -101,7 +101,7 @@ const createUser = async (request, response) => {
         }
         else {
           console.log('Bucket Created Successfully', data.Location);
-          const image = fs.readFileSync('./assets/defaukt-profile.png');
+          const image = fs.readFileSync('./assets/default-profile.png');
           const params = {
             Bucket: userBucket,
             Key: 'default-profile.png',
