@@ -30,7 +30,7 @@ exports.sendMail = (req, res, email = null) => {
         })
     request
       .then((result) => {
-        res.send("Mail sended")
+        response.status(200).send("user created")
       })
       .catch((err) => {
         res.send("Mail error")
