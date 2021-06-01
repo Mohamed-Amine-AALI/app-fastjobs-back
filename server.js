@@ -31,7 +31,7 @@ app.get('/', (request, response) => {
 // Users
 app.get('/users', db.getUsers)
 app.get('/users/:id', db.getUserById)
-app.put('/update/users/:id', db.updateUser)
+app.put('/update/users/:id', verifyToken, db.updateUser)
 app.delete('/delete/users/:id', db.deleteUser)
 
 // JWT
