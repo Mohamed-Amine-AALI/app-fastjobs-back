@@ -82,7 +82,7 @@ const createUser = async (request, response) => {
     }
   }).then((res) => {
     if (res != null) {
-      const userBucket = lastname.toLowerCase() + firstname.toLowerCase() + email.toLowerCase()
+      const userBucket = lastname.toLowerCase() + firstname.toLowerCase()
       console.log(process.env.AWS_ACCESS_KEY_ID)
       const s3 = new AWS.S3({
         accessKeyId: process.env.AWS_ACCESS_KEY_ID,
@@ -97,40 +97,29 @@ const createUser = async (request, response) => {
       s3.createBucket(params, function (err, data) {
         if (err) {
           console.log(err, err.stack);
-          response.status(400).send("PAS GG")
+          response.status(400).send("err")
         }
         else {
           console.log('Bucket Created Successfully', data.Location);
-          response.status(200).send("GG")
+          const image = fs.readFileSync('./assets/defaukt-profile.png');
+          const params = {
+            Bucket: userBucket,
+            Key: 'default-profile.png',
+            Body: image
+          };
+          s3.upload(params, function (err, data) {
+            if (err) {
+              console.log(err)
+              response.status(400).send("err")
+              throw err;
+            }
+            else {
+              console.log(`File uploaded successfully. ${data.Location}`);
+              response.status(200).send("user created")
+            }
+          });
         }
       });
-      // AWS.config.update({
-      //   secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-      //   accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-      //   region: "eu-west-3"
-      // })
-      // let bucketPromise = new AWS.S3({ apiVersion: '2006-03-01' })
-      //   .createBucket({ Bucket: userBucket })
-      //   .promise();
-      // bucketPromise.then(function (data) {
-      //   response.json({
-      //     text: `User added with id : ${res.id}`
-      //   })
-      //   var objectParams = { Bucket: userBucket, Key: 'default-profile' };
-      //   var uploadPromise = new AWS.S3({ apiVersion: '2006-03-01' }).putObject(objectParams).promise();
-      //   uploadPromise.then(
-      //     function (data) {
-      //       res.json({
-      //         text: `Successfully uploaded data to ${bucketName}/${keyName}`
-      //       })
-      //     });
-      // }).catch(
-      //   function (err) {
-      //     console.log(err)
-      //     res.json({
-      //       text: 'error'
-      //     })
-      //   });
     }
   }).catch((e) => {
     response.json({
