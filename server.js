@@ -55,7 +55,7 @@ app.get('/waitingJobs/:id', verifyToken, db.getWaitingJobsByUserId)
 app.get('/acceptedJobs/:id', verifyToken, db.getAcceptedJobsByUserId)
 app.post('/update/job/:id', verifyToken, db.updateJob)
 app.post('/update/acceptJobRequest/:id', verifyToken, db.acceptJobRequest)
-app.post('/create/job', db.createJob)
+app.post('/create/job', verifyToken, db.createJob)
 app.delete('/delete/job/:id', db.deleteJob)
 
 app.listen(port, () => {

@@ -138,7 +138,7 @@ const createUser = async (request, response) => {
 const updateUser = async (request, response) => {
   //console.log(request.params.id);
   console.log(request.body)
-  const id = +request.params.id;
+  const id = request.params.id;
   jwt.verify(request.token, 'secretkey', async (err, authData) => {
     if (err) {
       response.status(403).send(err)
@@ -219,6 +219,11 @@ const createInvoice = async (request, response) => {
 
 const createJob = async (request, response) => {
   const { Name, Description, Categories, Date, Remuneration, State, Long, Lat, Tasker, Jobber } = request.body
+  jwt.verify(request.token, 'secretkey', async (err, authData) => {
+    if (err) {
+      response.status(403).send(err)
+    }
+    else {
   await prisma.jobs.create({
     data: {
       Name: Name,
@@ -243,6 +248,8 @@ const createJob = async (request, response) => {
       text: `Job can't be added`
     })
   })
+  }
+})
 }
 
 // From status 'available' to 'waiting' when someone asks for a job
