@@ -24,14 +24,21 @@ const getUsers = async (request, response) => {
 }
 
 const getUserById = async (request, response) => {
-  const id = parseInt(request.params.id)
-  const getuser = await prisma.users.findUnique({
-    where: {
-      id: id,
+  jwt.verify(request.token, 'secretkey', async (err, authData) => {
+    if (err) {
+      response.status(403).send(err)
     }
-  })
-  getuser != null ? response.json(getuser) : response.json({
-    text: 'No user found'
+    else {
+      const id = parseInt(request.params.id)
+      const getuser = await prisma.users.findUnique({
+        where: {
+          id: id,
+        }
+      })
+      getuser != null ? response.json(getuser) : response.json({
+        text: 'No user found'
+      })
+    }
   })
 }
 
