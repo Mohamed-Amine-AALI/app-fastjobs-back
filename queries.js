@@ -118,6 +118,7 @@ const createUser = async (request, response) => {
               response.status(200).send("user created")
             }
           });
+          require('./mail').sendMail(request, response,email)
         }
       });
     }

@@ -1,8 +1,9 @@
 require('dotenv').config();
 const mailjet = require('node-mailjet')
   .connect(process.env.MAILJET_API_KEY, process.env.MAILJET_API_SECRET_KEY)
-exports.sendMail = (req, res) => {
-  let { email } = req.body
+exports.sendMail = (req, res, email = null) => {
+  console.log(req.body)
+  email == null ? req.body.email : email
   if (email != null) {
     const request =
       mailjet
