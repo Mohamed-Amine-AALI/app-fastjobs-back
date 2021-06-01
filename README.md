@@ -7,6 +7,6 @@ Here are the the steps to reproduce :
 
 ## Server
 
-Our backend is deployed in heroku server, endpoint (protected)
-### `endpoint (protected)`
+Our backend is deployed in heroku server.
+Our endpoint is protected, meaning it does not accept requests from anywhere.
 https://app-fastjobs-back.herokuapp.com/
