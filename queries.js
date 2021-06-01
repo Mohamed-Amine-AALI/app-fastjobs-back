@@ -115,7 +115,7 @@ const createUser = async (request, response) => {
             }
             else {
               console.log(`File uploaded successfully. ${data.Location}`);
-              response.status(200).send("user created")
+              require('./mail').sendMail(request, response, email)
             }
           });
         }
