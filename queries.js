@@ -82,13 +82,15 @@ const createUser = async (request, response) => {
     }
   }).then((res) => {
     if (res != null) {
-      const userBucket = lastname.toLowerCase() + firstname.toLowerCaset()
+      const userBucket = lastname.toLowerCase() + firstname.toLowerCase()
       AWS.config.update({
         secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
         accessKeyId: process.env.AWS_ACCESS_KEY_ID,
         region: "eu-west-3"
       })
-      var bucketPromise = new AWS.S3({ apiVersion: '2006-03-01' }).createBucket({ Bucket: userBucket }).promise();
+      let bucketPromise = new AWS.S3({ apiVersion: '2006-03-01' })
+        .createBucket({ Bucket: userBucket })
+        .promise();
       bucketPromise.then(function (data) {
         response.json({
           text: `User added with id : ${res.id}`
