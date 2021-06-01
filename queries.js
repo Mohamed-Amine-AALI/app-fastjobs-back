@@ -85,9 +85,10 @@ const createUser = async (request, response) => {
       response.json({
         text: `User added with id : ${res.id}`
       })
-      //const userBucket = lastname+firstname+email + uuid.v4();
+      const userBucket = lastname.toLowerCase()+firstname.toLowerCaset()
+      console.log(userBucketl)
       const params = {
-        Bucket: lastname + firstname + email,
+        Bucket: userBucket,
         CreateBucketConfiguration: {
           // Set your region here
           LocationConstraint: "eu-west-3"
@@ -104,8 +105,9 @@ const createUser = async (request, response) => {
           const fileContent = fs.readFileSync('./assets/default-profile.png');
 
           // Setting up S3 upload parameters
+          console.log(userBucket)
           const params = {
-            Bucket: lastname + firstname + email,
+            Bucket: userBucket,
             Key: 'default-profile.png', // File name you want to save as in S3
             Body: fileContent
           };
