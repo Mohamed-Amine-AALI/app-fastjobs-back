@@ -1,8 +1,10 @@
+require('dotenv').config();
 const jwt = require('jsonwebtoken')
+const AWS = require('aws-sdk');
+const fs = require('fs');
 const bcrypt = require('bcrypt')
 const { PrismaClient } = require("@prisma/client")
 const prisma = new PrismaClient()
-require('dotenv').config();
 const Pool = require('pg').Pool
 const pool = new Pool({
   user: process.env.DB_USER,
@@ -83,6 +85,40 @@ const createUser = async (request, response) => {
       response.json({
         text: `User added with id : ${res.id}`
       })
+      //const userBucket = lastname+firstname+email + uuid.v4();
+      const params = {
+        Bucket: lastname + firstname + email,
+        CreateBucketConfiguration: {
+          // Set your region here
+          LocationConstraint: "eu-west-3"
+        }
+      };
+      const s3 = new AWS.S3({
+        accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY
+      });
+      s3.createBucket(params, function (err, data) {
+        if (err) console.log(err, err.stack);
+        else {
+          console.log('Bucket Created Successfully', data.Location);
+          const fileContent = fs.readFileSync('./assets/default-profile.png');
+
+          // Setting up S3 upload parameters
+          const params = {
+            Bucket: lastname + firstname + email,
+            Key: 'default-profile.png', // File name you want to save as in S3
+            Body: fileContent
+          };
+
+          // Uploading files to the bucket
+          s3.upload(params, function (err, data) {
+            if (err) {
+              throw err;
+            }
+            console.log(`File uploaded successfully. ${data.Location}`);
+          });
+        }
+      });
     }
   }).catch((e) => {
     response.json({
@@ -94,7 +130,7 @@ const createUser = async (request, response) => {
 const updateUser = async (request, response) => {
   //console.log(request.params.id);
   const id = parseInt(request.params.id)
-  const { firstname, email ,lastname,phone} = request.body
+  const { firstname, email, lastname, phone } = request.body
   await prisma.users.update({
     where: {
       id: id
@@ -105,10 +141,10 @@ const updateUser = async (request, response) => {
       email: email,
       phone: phone,
     },
-  }).then((res)=>{
+  }).then((res) => {
     //console.log(res)
     response.status(200).send(`User modified with ID: ${id}`)
-  }).catch((err)=>{
+  }).catch((err) => {
     response.status(400).send(`Error occured`)
   })
   // pool.query(
@@ -158,7 +194,7 @@ const getInvoiceById = (request, response) => {
 
 const createInvoice = async (request, response) => {
   //console.log(request.body);
-  const {NumFacture,Date,Description,IdJob,Tasker,Jobber} = request.body
+  const { NumFacture, Date, Description, IdJob, Tasker, Jobber } = request.body
   const createInvoice = await prisma.invoices.create({
     data: {
       NumFacture,
@@ -172,7 +208,7 @@ const createInvoice = async (request, response) => {
   response.status(201).send(`Invoice added with ID: ${createInvoice.id}`)
 }
 
-  
+
 // JOBS
 
 const createJob = async (request, response) => {
@@ -345,7 +381,7 @@ const getAcceptedJobsByUserId = async (request, response) => {
     }
   })
 
-  
+
 }
 
 module.exports = {
