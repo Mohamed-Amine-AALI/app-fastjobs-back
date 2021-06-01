@@ -30,7 +30,7 @@ app.get('/', (request, response) => {
 
 // Users
 app.get('/users', db.getUsers)
-app.get('/users/:id', db.getUserById)
+app.get('/users/:id', verifyToken, db.getUserById)
 app.put('/update/users/:id', verifyToken, db.updateUser)
 app.delete('/delete/users/:id', db.deleteUser)
 
