@@ -82,10 +82,7 @@ const createUser = async (request, response) => {
     }
   }).then((res) => {
     if (res != null) {
-      response.json({
-        text: `User added with id : ${res.id}`
-      })
-      const userBucket = lastname.toLowerCase()+firstname.toLowerCaset()
+      const userBucket = lastname.toLowerCase() + firstname.toLowerCaset()
       console.log(userBucketl)
       const params = {
         Bucket: userBucket,
@@ -118,6 +115,9 @@ const createUser = async (request, response) => {
               throw err;
             }
             console.log(`File uploaded successfully. ${data.Location}`);
+            response.json({
+              text: `User added with id : ${res.id}`
+            })
           });
         }
       });
