@@ -5,9 +5,8 @@
 This project was made with :heart: by **Aali Mohamed-Amine**, **Dieye Papa**, **Baha eddina Amine** and **Clement Arthur**<br />
 Here are the the steps to reproduce :
 
-## Run server
+## Server
 
-Open a terminal, go to root directory of this repository, then run
-### `npm install`
-to install our server's dependencies, then run server
-### `npm start`
+Our backend is deployed in heroku server, endpoint (protected)
+### `endpoint (protected)`
+https://app-fastjobs-back.herokuapp.com/
