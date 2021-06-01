@@ -241,7 +241,7 @@ const createJob = async (request, response) => {
 
 // From status 'available' to 'waiting' when someone asks for a job
 const updateJob = async (request, response) => {
-  const jobId = request.params.id;
+  const jobId = +request.params.id;
   const jobberId = request.body.jobber
   jwt.verify(request.token, 'secretkey', async (err, authData) => {
     if (err) {
