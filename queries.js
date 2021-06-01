@@ -378,7 +378,7 @@ const getAcceptedJobsByUserId = async (request, response) => {
     }
     else {
       const taskerId = request.params.id;
-      pool.query("SELECT id FROM jobs WHERE tasker = $1 AND state = 'waiting'", [taskerId],
+      pool.query("SELECT id FROM jobs WHERE tasker = $1 AND state = 'waiting' OR state = 'inprogress'", [taskerId],
         (error, results) => {
           if (error) {
             res.status(403).send(error)

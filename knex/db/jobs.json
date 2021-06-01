@@ -8,7 +8,7 @@
     "price": 20,
     "lat": 48.90803146362305,
     "long": 2.438076972961426,
-    "tasker": 48,
+    "tasker": 1,
     "jobber": null
   },
   {
@@ -20,7 +20,7 @@
     "price": 15,
     "lat": 48.90524673461914,
     "long": 2.4425241947174072,
-    "tasker": 48,
+    "tasker": 1,
     "jobber": null
   },
   {
@@ -32,8 +32,8 @@
     "state": "inprogress",
     "lat": 48.904967,
     "long": 2.435642,
-    "tasker": 49,
-    "jobber": 48
+    "tasker": 1,
+    "jobber": 2
   },
   {
     "name": "Couper le gazon",
@@ -44,8 +44,8 @@
     "state": "inprogress",
     "lat": 48.90541458129883,
     "long": 2.4478042125701904,
-    "tasker": 48,
-    "jobber": 49
+    "tasker": 2,
+    "jobber": 1
   },
   {
     "name": "Couper le gazon",
@@ -56,8 +56,8 @@
     "state": "available",
     "lat": 48.902438,
     "long": 2.434123,
-    "tasker": 49,
-    "jobber": 48
+    "tasker": 1,
+    "jobber": null
   },
   {
     "name": "Couper le gazon",
@@ -68,7 +68,7 @@
     "state": "available",
     "lat": 48.905690,
     "long": 2.445643,
-    "tasker": 48,
+    "tasker": 1,
     "jobber": null
   }
 ]
